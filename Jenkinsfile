@@ -54,8 +54,9 @@ pipeline {
         
         stage('Deploy to S3') {
             steps {
-                withEnv(["AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}", "AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}", "AWS_DEFAULT_REGION=${AWS_REGION}"]) {
+                withCredentials([usernamePassword(credentialsId: 'aws-deploy-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
+                        export AWS_DEFAULT_REGION=${AWS_REGION}
                         echo "Uploading files to S3..."
                         aws s3 sync dist/ s3://${S3_BUCKET}/ --delete --cache-control "max-age=3600" --exclude ".git*"
                         echo "Files uploaded to S3"
@@ -66,8 +67,9 @@ pipeline {
         
         stage('Invalidate CloudFront Cache') {
             steps {
-                withEnv(["AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}", "AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}", "AWS_DEFAULT_REGION=${AWS_REGION}"]) {
+                withCredentials([usernamePassword(credentialsId: 'aws-deploy-credentials', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
+                        export AWS_DEFAULT_REGION=${AWS_REGION}
                         echo "Invalidating CloudFront cache..."
                         aws cloudfront create-invalidation \
                             --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} \
