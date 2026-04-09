@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        // AWS credentials configured in Jenkins.
+        // AWS credentials configured in Jenkins...
         AWS_CREDENTIALS = credentials('aws-deploy-credentials')
         AWS_REGION = 'us-east-1'
         
