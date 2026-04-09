@@ -6,19 +6,19 @@ pipeline {
     }
     
     environment {
-        // AWS credentials configured in Jenkins
+        // AWS credentials configured in Jenkins.
         AWS_CREDENTIALS = credentials('aws-deploy-credentials')
         AWS_REGION = 'us-east-1'
         
         // Update these with values from: terraform output
         S3_BUCKET = 'jenkins-walkthrough-demo-20260409-abc123'  // Change to your bucket
-        CLOUDFRONT_DISTRIBUTION_ID = 'E3EAE5FB8NGEQD' // Change to your distribution ID
+        CLOUDFRONT_DISTRIBUTION_ID = 'E3P2J810BNHIHD' // Change to your distribution ID
     }
     
     stages {
         stage('Clone repo') {
             steps {
-                git branch: 'master', url:'https://github.com/kadimasum/jenkins-walkthrough'
+                git branch: 'master', url:'https://github.com/kadimasum/jenkins-walkthrough' // Change to your repository URL and branch
                 echo "Code checked out from ${GIT_BRANCH}"
             }
         }
