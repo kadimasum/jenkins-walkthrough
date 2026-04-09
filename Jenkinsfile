@@ -12,7 +12,7 @@ pipeline {
         
         // Update these with values from: terraform output
         S3_BUCKET = 'jenkins-walkthrough-demo-20260409-abc123'  // Change to your bucket
-        CLOUDFRONT_DISTRIBUTION_ID = 'E3EAE5FB8NGEQD' // Change to your distribution ID.
+        CLOUDFRONT_DISTRIBUTION_ID = 'E3EAE5FB8NGEQD' // Change to your distribution ID
     }
     
     stages {
