@@ -1,0 +1,42 @@
+# AWS S3 Backend Configuration Example
+# 
+# Use this when you want to migrate from local to S3 backend for team collaboration
+# 
+# Prerequisites:
+#   1. Create S3 bucket: aws s3 mb s3://devops13-studio-terraform-state
+#   2. Enable versioning: aws s3api put-bucket-versioning --bucket devops13-studio-terraform-state --versioning-configuration Status=Enabled
+#   3. Block public access: aws s3api put-public-access-block --bucket devops13-studio-terraform-state --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+#   4. Create DynamoDB table for locking:
+#      aws dynamodb create-table \
+#        --table-name terraform-locks \
+#        --attribute-definitions AttributeName=LockID,AttributeType=S \
+#        --key-schema AttributeName=LockID,KeyType=HASH \
+#        --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+
+terraform {
+  backend "s3" {
+    # S3 bucket for storing state files
+    bucket = "devops13-studio-terraform-state"
+    
+    # Path within bucket to store state
+    # Use different keys for different environments
+    key = "devops13-studio/terraform.tfstate"
+    
+    # AWS region
+    region = "us-east-1"
+    
+    # Encrypt state files at rest
+    encrypt = true
+    
+    # DynamoDB table for state locking (prevents concurrent modifications)
+    dynamodb_table = "terraform-locks"
+  }
+}
+
+# Usage:
+# 1. Update bucket name and region to match your setup
+# 2. Replace this backend block in main.tf with this one
+# 3. Run: terraform init -migrate-state
+# 4. Answer "yes" when prompted to migrate existing state
+#
+# State file will now be stored in S3 and locked during operations
